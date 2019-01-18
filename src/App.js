@@ -1,27 +1,42 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import "./App.css";
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: null
+    };
+  }
+
+  componentDidMount() {
+    fetch("https://pokeapi.co/api/v2/pokemon/400")
+      .then(response => {
+        console.log(response);
+        return response.json();
+      })
+      .then(data => {
+        console.log(data);
+        this.setState({ data });
+      });
+  }
+
   render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
+    if (!this.state.data) {
+      return <h1>LOADING BRUH</h1>;
+    } else {
+      return (
+        <div>
+          <h1>Pokedex for {this.state.data.name}</h1>
+          <img src={this.state.data.sprites.front_default} alt="" />
+          <div>
+            {this.state.data.abilities.map((ability, i) => {
+              return <p key={i}>{ability.ability.name}</p>;
+            })}
+          </div>
+        </div>
+      );
+    }
   }
 }
 
